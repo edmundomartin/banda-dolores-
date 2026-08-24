@@ -38,12 +38,13 @@
           <div class="field"><label>Instrumento</label><select id="registerInstrument" required></select></div>
           <div class="field"><label>Voz</label><select id="registerVoice" required></select></div>
         </div>
+        <div class="tiny" style="margin:-4px 0 12px">Instrumentos disponibles actualizados, incluida <strong>Caja</strong>.</div>
         <div class="field"><label>Correo electrónico</label><input id="registerEmail" type="email" autocomplete="email" required></div>
         <div class="field"><label>Contraseña</label><input id="registerPassword" type="password" autocomplete="new-password" minlength="6" required></div>
         <div class="note" style="margin-bottom:12px">El primer usuario que se registre será el Administrador Principal. El resto entrará como músico de Escuela hasta que Dirección lo cambie.</div>
         <button class="btn primary" style="width:100%" type="submit">Crear mi usuario</button>
       </form>
-      <div class="version">Versión 0.3 · usuarios reales con Supabase</div>
+      <div class="version">Versión 0.4 · Supabase activo · Caja incluida</div>
     </div>
   </section>
 
@@ -81,7 +82,7 @@
       <div class="section-title"><h2>Insignias</h2><span class="pill">Beta</span></div><div id="badges" class="badge-grid"></div>
       <div class="admin-only"><div class="section-title"><h2>Dirección</h2></div><div class="card"><h3>Permisos</h3><p class="muted">Los administradores pueden gestionar eventos, asistencia, grupos y marchas. Solo el Administrador Principal puede nombrar o retirar administradores.</p></div></div>
       <div class="danger-zone card"><h3>Cuenta</h3><button id="logoutBtn" class="btn ghost">Cerrar sesión</button></div>
-      <div class="version">v0.3 · GitHub Pages + Supabase</div>
+      <div class="version">v0.4 · GitHub Pages + Supabase</div>
     </div></section>
 
     <nav class="tabs" aria-label="Navegación principal"><button class="tab active" data-target="inicio"><span>⌂</span><span>Inicio</span></button><button class="tab" data-target="musicos"><span>♬</span><span>Músicos</span></button><button class="tab" data-target="eventos"><span>◫</span><span>Eventos</span></button><button class="tab" data-target="marchas"><span>♫</span><span>Marchas</span></button><button class="tab" data-target="perfil"><span>●</span><span>Perfil</span></button></nav>
@@ -120,6 +121,7 @@
     const SUPABASE_KEY='sb_publishable_4F03BfJ58jAgnxJL5FDd3w_uWSOBaSf';
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     const INSTRUMENTS=['Trompeta','Corneta','Trombón','Bombardino','Tambor','Caja','Bombo','Platillos','Otro'];
+    const BUILD_ID='2026-08-24-v0.4';
     const VOICES=['1ª voz','2ª voz','3ª voz','Única / no aplica'];
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
     let session=null,me=null,members=[],events=[],responses={},marches=[],marchFiles={},badges=[],myBadges=[];
