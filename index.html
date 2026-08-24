@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b0b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Dolores Avilés" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>Ntra. Sra. de los Dolores · Avilés</title>
+  <style>
+    :root{--bg:#080808;--panel:#111;--panel2:#171717;--gold:#d6b15c;--gold2:#f0d58a;--text:#f8f4e8;--muted:#b9b3a4;--line:#2c2a24;--ok:#7fc58f;--warn:#e0b85e;--bad:#d87979}
+    *{box-sizing:border-box} html{background:var(--bg);color-scheme:dark} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#060606 0%,#0a0a0a 100%);color:var(--text)}
+    button,input,select{font:inherit} button{cursor:pointer}.app{max-width:880px;margin:auto;min-height:100vh;padding-bottom:92px}.hero{position:relative;min-height:340px;background:url('portada.jpeg') center/cover no-repeat;border-bottom:1px solid #2b2618;display:flex;align-items:flex-end}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.82) 78%,#080808 100%)}.hero-inner{position:relative;z-index:1;padding:28px 20px 34px;width:100%}.crest{width:66px;height:66px;border-radius:20px;background:#0c0c0cdd;border:1px solid #806b36;display:grid;place-items:center;margin-bottom:14px}.crest img{width:54px;height:54px}.eyebrow{color:var(--gold2);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}.hero h1{font-size:clamp(30px,6vw,52px);line-height:1.02;margin:8px 0 8px;max-width:740px}.hero p{margin:0;color:#ddd4bf;max-width:620px}.content{padding:18px}.grid{display:grid;gap:14px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:16px}.card h3,.card h2{margin:0 0 10px}.muted{color:var(--muted)}.kpi{font-size:28px;font-weight:800;color:var(--gold2)}.tiny{font-size:12px;color:var(--muted)}.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid #3a3426;border-radius:999px;background:#15120c;color:#ead59b;font-size:12px}.section-title{display:flex;align-items:center;justify-content:space-between;margin:10px 0 12px}.section-title h2{margin:0;font-size:20px}.btn{border:1px solid #665528;background:#1a160d;color:#f6e3a6;padding:11px 14px;border-radius:12px;font-weight:700}.btn.primary{background:linear-gradient(180deg,#d7b35f,#b28b38);color:#111;border-color:#e5c777}.btn.ghost{background:transparent;color:var(--text);border-color:#353535}.btn.danger{border-color:#6c3434;color:#ffd1d1;background:#211111}.row{display:flex;align-items:center;gap:12px}.between{justify-content:space-between}.list{display:grid;gap:10px}.person{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#0f0f0f}.avatar{width:46px;height:46px;border-radius:50%;background:#2a261a;border:1px solid #6b5830;display:grid;place-items:center;overflow:hidden;flex:0 0 auto;font-weight:800;color:#f0d58a}.avatar img{width:100%;height:100%;object-fit:cover}.grow{flex:1;min-width:0}.name{font-weight:800}.sub{font-size:13px;color:var(--muted);margin-top:2px}.tabs{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(880px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:#0b0b0bf2;border-top:1px solid #2d2a22;backdrop-filter:blur(16px);z-index:20;padding-bottom:env(safe-area-inset-bottom)}.tab{border:0;background:transparent;color:#9f9a8f;padding:10px 5px 9px;font-size:11px;display:grid;gap:3px;place-items:center}.tab.active{color:var(--gold2)}.tab span:first-child{font-size:19px}.screen{display:none}.screen.active{display:block}.event{border-left:3px solid var(--gold);padding-left:12px}.status{font-size:12px;font-weight:700}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.choice{flex:1;min-width:95px}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:13px;color:#d4cdbd}.field input,.field select{width:100%;padding:12px 13px;border-radius:12px;border:1px solid #37342b;background:#0d0d0d;color:#fff;outline:none}.field input:focus,.field select:focus{border-color:#8f773d;box-shadow:0 0 0 3px #8f773d22}.modal{position:fixed;inset:0;background:#000b;z-index:50;display:none;align-items:flex-end;justify-content:center}.modal.open{display:flex}.sheet{width:min(880px,100%);max-height:88vh;overflow:auto;background:#111;border:1px solid #393223;border-radius:22px 22px 0 0;padding:20px}.badge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.badge{padding:14px;border-radius:16px;border:1px solid #413822;background:radial-gradient(circle at top,#221b0f,#111 60%)}.badge .icon{font-size:28px}.marcha{padding:13px;border:1px solid var(--line);border-radius:14px;background:#0e0e0e}.linkbtn{display:block;width:100%;text-align:left;margin-top:8px}.note{padding:12px;border-radius:12px;background:#17130c;border:1px solid #4a3c20;color:#e8d6a6;font-size:13px}.toast{position:fixed;left:50%;bottom:94px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;transition:.2s;background:#1b170e;border:1px solid #69552c;color:#f7e2a4;padding:10px 14px;border-radius:999px;z-index:80}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(max-width:600px){.grid.two{grid-template-columns:1fr}.hero{min-height:300px}.content{padding:14px}.badge-grid{grid-template-columns:1fr}.hero h1{font-size:34px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section id="inicio" class="screen active">
+      <div class="hero">
+        <div class="hero-inner">
+          <div class="crest"><img src="icon.svg" alt="Emblema simbólico"></div>
+          <div class="eyebrow">Banda de Trompetas y Tambores</div>
+          <h1>Nuestra Señora de los Dolores de Avilés</h1>
+          <p>App privada de organización, asistencia, repertorio y vida de banda.</p>
+        </div>
+      </div>
+      <div class="content">
+        <div class="grid two">
+          <div class="card"><div class="tiny">Próximo ensayo</div><div class="kpi" id="nextEventDay">—</div><div class="muted" id="nextEventInfo">Todavía no hay eventos creados</div></div>
+          <div class="card"><div class="tiny">Tu asistencia</div><div class="kpi" id="kpiAttendance">—</div><div class="muted">Temporada 2026/27</div></div>
+        </div>
+        <div class="section-title"><h2>Próximos eventos</h2><span class="pill">2026/27</span></div>
+        <div id="homeEvents" class="list"></div>
+      </div>
+    </section>
+
+    <section id="musicos" class="screen"><div class="content">
+      <div class="section-title"><h2>Músicos</h2><button class="btn" id="openProfileBtn">Mi perfil</button></div>
+      <div class="note">Cada músico puede añadir nombre, apellidos, foto, instrumento, voz y pertenencia a Banda Oficial o Escuela.</div>
+      <div class="section-title"><h2>Banda Oficial</h2><span class="pill" id="countOfficial">0</span></div><div id="officialList" class="list"></div>
+      <div class="section-title"><h2>Escuela</h2><span class="pill" id="countSchool">0</span></div><div id="schoolList" class="list"></div>
+    </div></section>
+
+    <section id="eventos" class="screen"><div class="content">
+      <div class="section-title"><h2>Eventos y ensayos</h2><button class="btn" id="newEventBtn">+ Crear</button></div>
+      <div id="eventsList" class="list"></div>
+    </div></section>
+
+    <section id="marchas" class="screen"><div class="content">
+      <div class="section-title"><h2>Marchas</h2><span class="pill">PDF + MP3</span></div>
+      <div class="note">Todavía no hay marchas añadidas. Dirección podrá ir creando el repertorio y subir las partituras y audios de cada marcha.</div>
+      <div id="marchasList" class="list" style="margin-top:12px"></div>
+    </div></section>
+
+    <section id="perfil" class="screen"><div class="content">
+      <div class="section-title"><h2>Mi espacio</h2><button class="btn" id="editProfileBtn">Editar perfil</button></div>
+      <div id="myProfileCard" class="card"></div>
+      <div class="section-title"><h2>Insignias</h2><span class="pill">Beta</span></div>
+      <div id="badges" class="badge-grid"></div>
+      <div class="section-title"><h2>Dirección</h2></div>
+      <div class="card"><h3>Recordatorios</h3><p class="muted">Configuración prevista: aviso automático diario a las 17:00 solo a quienes no hayan confirmado asistencia, hasta el mismo día del ensayo.</p><button class="btn ghost" id="notifyDemoBtn">Probar aviso privado</button></div>
+    </div></section>
+
+    <nav class="tabs" aria-label="Navegación principal">
+      <button class="tab active" data-target="inicio"><span>⌂</span><span>Inicio</span></button>
+      <button class="tab" data-target="musicos"><span>♬</span><span>Músicos</span></button>
+      <button class="tab" data-target="eventos"><span>◫</span><span>Eventos</span></button>
+      <button class="tab" data-target="marchas"><span>♫</span><span>Marchas</span></button>
+      <button class="tab" data-target="perfil"><span>●</span><span>Perfil</span></button>
+    </nav>
+  </div>
+
+  <div class="modal" id="profileModal"><div class="sheet"><div class="row between"><h2>Perfil de músico</h2><button class="btn ghost" data-close="profileModal">Cerrar</button></div>
+    <form id="profileForm">
+      <div class="field"><label>Nombre y apellidos</label><input id="fullName" required placeholder="Ej. Edmundo Martín"></div>
+      <div class="field"><label>Foto de perfil</label><input id="photo" type="file" accept="image/*"></div>
+      <div class="grid two"><div class="field"><label>Instrumento</label><select id="instrument"><option>Trompeta</option><option>Corneta</option><option>Trombón</option><option>Bombardino</option><option>Tambor</option><option>Bombo</option><option>Platillos</option><option>Otro</option></select></div><div class="field"><label>Voz</label><select id="voice"><option>1ª voz</option><option>2ª voz</option><option>3ª voz</option><option>Única / no aplica</option></select></div></div>
+      <div class="field"><label>Grupo</label><select id="group"><option>Banda Oficial</option><option>Escuela</option></select></div>
+      <button class="btn primary" type="submit">Guardar perfil</button>
+    </form>
+  </div></div>
+
+  <div class="modal" id="eventModal"><div class="sheet"><div class="row between"><h2>Nuevo evento</h2><button class="btn ghost" data-close="eventModal">Cerrar</button></div>
+    <form id="eventForm">
+      <div class="field"><label>Nombre</label><input id="eventName" required placeholder="Ensayo general"></div>
+      <div class="grid two"><div class="field"><label>Fecha</label><input id="eventDate" type="date" required></div><div class="field"><label>Hora</label><input id="eventTime" type="time" required value="19:00"></div></div>
+      <div class="grid two"><div class="field"><label>Tipo</label><select id="eventType"><option>Ensayo</option><option>Actuación</option><option>Concierto</option><option>Traslado</option><option>Procesión</option></select></div><div class="field"><label>% mínimo para actuar</label><input id="requiredPct" type="number" min="0" max="100" value="80"></div></div>
+      <button class="btn primary" type="submit">Crear evento</button>
+    </form>
+  </div></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  const qs=s=>document.querySelector(s), qsa=s=>[...document.querySelectorAll(s)];
+  const store={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
+  const defaultEvents=[];
+  const marches=[];
+  let events=store.get('dolores_v02_events',defaultEvents), votes=store.get('dolores_v02_votes',{}), profile=store.get('dolores_v02_profile',null), members=store.get('dolores_v02_members',[]);
+  function toast(t){const e=qs('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1800)}
+  function fmtDate(d){return new Intl.DateTimeFormat('es-ES',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(d+'T12:00:00'))}
+  function attendance(){const ensayos=events.filter(e=>e.type==='Ensayo');if(!ensayos.length)return null;const yes=ensayos.filter(e=>votes[e.id]==='yes').length;const answered=ensayos.filter(e=>votes[e.id]).length;return answered?Math.round(yes/ensayos.length*100):0}
+  function eventCard(e,home=false){const v=votes[e.id];let st=v==='yes'?'<span class="status ok">Confirmado: voy</span>':v==='no'?'<span class="status bad">Confirmado: no voy</span>':'<span class="status warn">Pendiente de confirmar</span>';return `<div class="card event"><div class="row between"><div class="grow"><div class="name">${e.name}</div><div class="sub">${fmtDate(e.date)} · ${e.time} · ${e.type}</div></div>${e.requiredPct!=null?`<span class="pill">mín. ${e.requiredPct}%</span>`:''}</div><div style="margin-top:10px">${st}</div>${home?'':`<div class="actions"><button class="btn choice" data-vote="yes" data-id="${e.id}">Voy</button><button class="btn ghost choice" data-vote="no" data-id="${e.id}">No voy</button></div>`}</div>`}
+  function renderEvents(){events.sort((a,b)=>a.date.localeCompare(b.date));qs('#eventsList').innerHTML=events.length?events.map(e=>eventCard(e)).join(''):'<div class="muted">Todavía no hay eventos ni ensayos creados.</div>';qs('#homeEvents').innerHTML=events.length?events.slice(0,3).map(e=>eventCard(e,true)).join(''):'<div class="muted">Todavía no hay próximos eventos.</div>';const next=events[0];qs('#nextEventDay').textContent=next?fmtDate(next.date).split(' ')[0]:'—';qs('#nextEventInfo').textContent=next?`${fmtDate(next.date)} · ${next.time} · ${next.name}`:'Todavía no hay eventos creados';const a=attendance();qs('#kpiAttendance').textContent=a==null?'—':a+'%';qsa('[data-vote]').forEach(b=>b.addEventListener('click',()=>{votes[b.dataset.id]=b.dataset.vote;store.set('dolores_v02_votes',votes);renderEvents();renderProfile();toast('Asistencia actualizada')}))}
+  function initials(n){return (n||'?').split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase()}
+  function avatarHTML(m){return m.photo?`<img src="${m.photo}" alt="Foto de ${m.name}">`:initials(m.name)}
+  function memberCard(m){return `<div class="person"><div class="avatar">${avatarHTML(m)}</div><div class="grow"><div class="name">${m.name}</div><div class="sub">${m.instrument} · ${m.voice}</div></div><span class="pill">${m.group==='Escuela'?'Escuela':'Oficial'}</span></div>`}
+  function syncProfileMember(){if(!profile)return;const idx=members.findIndex(m=>m.self);const m={...profile,self:true};if(idx>=0)members[idx]=m;else members.push(m);store.set('dolores_v02_members',members)}
+  function renderMembers(){const off=members.filter(m=>m.group==='Banda Oficial'), sch=members.filter(m=>m.group==='Escuela');qs('#officialList').innerHTML=off.length?off.map(memberCard).join(''):'<div class="muted">Aún no hay músicos registrados.</div>';qs('#schoolList').innerHTML=sch.length?sch.map(memberCard).join(''):'<div class="muted">Aún no hay músicos registrados.</div>';qs('#countOfficial').textContent=off.length;qs('#countSchool').textContent=sch.length}
+  function renderMarches(){qs('#marchasList').innerHTML=marches.length?marches.map((m,i)=>`<div class="marcha"><div class="row between"><div><div class="name">${m}</div><div class="sub">Partituras y audios</div></div><span class="pill">Marcha</span></div></div>`).join(''):'<div class="muted">Repertorio vacío. Aún no se ha añadido ninguna marcha.</div>'}
+  function renderProfile(){if(!profile){qs('#myProfileCard').innerHTML='<p class="muted">Todavía no has creado tu perfil.</p><button class="btn primary" id="createProfileInline">Crear mi usuario</button>';setTimeout(()=>qs('#createProfileInline')?.addEventListener('click',()=>openModal('profileModal')),0)}else{const a=attendance();qs('#myProfileCard').innerHTML=`<div class="row"><div class="avatar" style="width:64px;height:64px">${avatarHTML(profile)}</div><div><div class="name" style="font-size:20px">${profile.name}</div><div class="sub">${profile.instrument} · ${profile.voice} · ${profile.group}</div></div></div><div class="grid two" style="margin-top:16px"><div><div class="tiny">Asistencia</div><div class="kpi">${a??0}%</div></div><div><div class="tiny">Temporada</div><div class="kpi">2026/27</div></div></div>`}
+    qs('#badges').innerHTML='<div class="muted">Aún no has conseguido ninguna insignia.</div>'}
+  function openModal(id){qs('#'+id).classList.add('open');if(id==='profileModal'&&profile){qs('#fullName').value=profile.name;qs('#instrument').value=profile.instrument;qs('#voice').value=profile.voice;qs('#group').value=profile.group}}
+  qsa('[data-close]').forEach(b=>b.addEventListener('click',()=>qs('#'+b.dataset.close).classList.remove('open')));
+  qsa('.tab').forEach(b=>b.addEventListener('click',()=>{qsa('.tab').forEach(x=>x.classList.remove('active'));qsa('.screen').forEach(x=>x.classList.remove('active'));b.classList.add('active');qs('#'+b.dataset.target).classList.add('active');scrollTo({top:0,behavior:'smooth'})}));
+  qs('#openProfileBtn').addEventListener('click',()=>openModal('profileModal'));qs('#editProfileBtn').addEventListener('click',()=>openModal('profileModal'));qs('#newEventBtn').addEventListener('click',()=>openModal('eventModal'));
+  qs('#profileForm').addEventListener('submit',e=>{e.preventDefault();const save=photo=>{profile={name:qs('#fullName').value.trim(),instrument:qs('#instrument').value,voice:qs('#voice').value,group:qs('#group').value,photo:photo??profile?.photo??null};store.set('dolores_v02_profile',profile);syncProfileMember();renderMembers();renderProfile();qs('#profileModal').classList.remove('open');toast('Perfil guardado')};const f=qs('#photo').files[0];if(f){const r=new FileReader();r.onload=()=>save(r.result);r.readAsDataURL(f)}else save()});
+  qs('#eventForm').addEventListener('submit',e=>{e.preventDefault();const pct=Number(qs('#requiredPct').value);events.push({id:'e'+Date.now(),name:qs('#eventName').value.trim(),date:qs('#eventDate').value,time:qs('#eventTime').value,type:qs('#eventType').value,requiredPct:Number.isFinite(pct)?Math.max(0,Math.min(100,pct)):80});store.set('dolores_v02_events',events);renderEvents();qs('#eventModal').classList.remove('open');e.target.reset();qs('#eventTime').value='19:00';qs('#requiredPct').value='80';toast('Evento creado')});
+  qs('#notifyDemoBtn').addEventListener('click',()=>toast('Aviso privado de prueba enviado'));
+  renderEvents();syncProfileMember();renderMembers();renderMarches();renderProfile();
+  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+  </script>
+</body>
+</html>
