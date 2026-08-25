@@ -44,7 +44,7 @@
         <div class="note" style="margin-bottom:12px">El primer usuario que se registre será el Administrador Principal. El resto entrará como músico de Escuela hasta que Dirección lo cambie.</div>
         <button class="btn primary" style="width:100%" type="submit">Crear mi usuario</button>
       </form>
-      <div class="version">Versión 0.4 · Supabase activo · Caja incluida</div>
+      <div class="version">Versión 0.6 · Supabase activo · acceso sin verificación preparado</div>
     </div>
   </section>
 
@@ -141,6 +141,7 @@
     function openModal(id){$('#'+id).classList.add('open')}
     function closeModal(id){$('#'+id).classList.remove('open')}
     function setAuthMode(register){$('#loginForm').classList.toggle('hidden',register);$('#registerForm').classList.toggle('hidden',!register);$('#showLogin').classList.toggle('active',!register);$('#showRegister').classList.toggle('active',register)}
+    function humanAuthError(msg=''){const m=String(msg).toLowerCase();if(m.includes('invalid login credentials'))return 'Correo o contraseña incorrectos, o la cuenta aún no está confirmada.';if(m.includes('email not confirmed'))return 'La cuenta todavía requiere confirmación por correo.';if(m.includes('user already registered'))return 'Ese correo ya tiene una cuenta. Usa Entrar.';return msg}
     $('#showLogin').addEventListener('click',()=>setAuthMode(false));$('#showRegister').addEventListener('click',()=>setAuthMode(true));
     $$('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
     $$('.tab').forEach(b=>b.addEventListener('click',()=>{$$('.tab').forEach(x=>x.classList.remove('active'));$$('.screen').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#'+b.dataset.target).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}));
@@ -172,7 +173,7 @@
     async function boot(){const {data:{session:s}}=await sb.auth.getSession();session=s;if(!session){$('#authView').classList.remove('hidden');$('#appView').classList.add('hidden');return}try{$('#authView').classList.add('hidden');$('#appView').classList.remove('hidden');await loadProfile();await Promise.all([loadMembers(),loadEvents(),loadMarches(),loadBadges()]);await renderAll()}catch(err){console.error(err);toast('Error al cargar datos: '+(err.message||err))}}
 
     $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter;btn.disabled=true;const {error}=await sb.auth.signInWithPassword({email:$('#loginEmail').value.trim(),password:$('#loginPassword').value});btn.disabled=false;if(error)return toast(error.message);toast('Sesión iniciada');await boot()});
-    $('#registerForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter;btn.disabled=true;const {data,error}=await sb.auth.signUp({email:$('#registerEmail').value.trim(),password:$('#registerPassword').value,options:{data:{full_name:$('#registerName').value.trim(),instrument:$('#registerInstrument').value,voice:$('#registerVoice').value}}});btn.disabled=false;if(error)return toast(error.message);if(data.session){toast('Usuario creado');await boot()}else{toast('Usuario creado. Revisa tu correo para confirmar la cuenta.');setAuthMode(false)}});
+    $('#registerForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter;btn.disabled=true;const {data,error}=await sb.auth.signUp({email:$('#registerEmail').value.trim(),password:$('#registerPassword').value,options:{data:{full_name:$('#registerName').value.trim(),instrument:$('#registerInstrument').value,voice:$('#registerVoice').value}}});btn.disabled=false;if(error)return toast(humanAuthError(error.message));if(data.session){toast('Usuario creado. Ya puedes entrar.');await boot()}else{toast('Cuenta creada, pero Supabase sigue exigiendo confirmar el correo. Desactiva "Confirm email" en Supabase para permitir acceso inmediato.');setAuthMode(false)}});
     $('#logoutBtn').addEventListener('click',async()=>{await sb.auth.signOut();location.reload()});
 
     $('#openProfileBtn').addEventListener('click',openProfile);$('#editProfileBtn').addEventListener('click',openProfile);
@@ -198,7 +199,7 @@
 
     sb.auth.onAuthStateChange((_event,newSession)=>{if((newSession?.user?.id||null)!==(session?.user?.id||null)){session=newSession;setTimeout(boot,0)}});
     boot();
-    if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+    if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=06',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}
   })();
   </script>
 </body>
