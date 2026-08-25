@@ -126,7 +126,7 @@
       <div class="section-title"><h2>Insignias</h2><span class="pill">Beta</span></div><div id="badges" class="badge-grid"></div>
       <div class="admin-only"><div class="section-title"><h2>Dirección</h2></div><div class="card"><h3>Permisos</h3><p class="muted">Los administradores pueden gestionar eventos, asistencia, grupos, temporadas y marchas. Solo el Administrador Principal puede nombrar o retirar administradores.</p><div class="actions"><button class="btn small" id="seasonsBtn">Gestionar temporadas</button></div></div></div>
       <div class="danger-zone card"><h3>Cuenta</h3><button id="logoutBtn" class="btn ghost">Cerrar sesión</button></div>
-      <div class="version">v1.0.3 · GitHub Pages + Supabase</div>
+      <div class="version">v1.0.4 · GitHub Pages + Supabase</div>
     </div></section>
 
     <nav class="tabs" aria-label="Navegación principal"><button class="tab active" data-target="inicio"><span>⌂</span><span>Inicio</span></button><button class="tab" data-target="musicos"><span>♬</span><span>Músicos</span></button><button class="tab" data-target="eventos"><span>◫</span><span>Eventos</span></button><button class="tab" data-target="marchas"><span>♫</span><span>Marchas</span></button><button class="tab admin-tab" data-target="direccion"><span>⚙</span><span>Dirección</span></button><button class="tab" data-target="perfil"><span>●</span><span>Perfil</span></button></nav>
@@ -201,7 +201,7 @@
     const SUPABASE_KEY='sb_publishable_4F03BfJ58jAgnxJL5FDd3w_uWSOBaSf';
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     const INSTRUMENTS=['Trompeta','Corneta','Trombón','Bombardino','Tambor','Caja','Bombo','Platillos','Otro'];
-    const BUILD_ID='2026-08-25-v1.0.3';
+    const BUILD_ID='2026-08-25-v1.0.4';
     const VOICES=['1ª voz','2ª voz','3ª voz','Única / no aplica'];
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
     let session=null,me=null,members=[],events=[],myResponses={},allResponses=[],marches=[],marchFiles={},marchAccess={},badges=[],myBadges=[],seasons=[],activeSeason=null,commitmentLevels={},inventoryItems=[],currentLineup=[];
@@ -268,6 +268,16 @@
     async function moveLineup(id,delta){const idx=currentLineup.findIndex(x=>x.id===id),j=idx+delta;if(idx<0||j<0||j>=currentLineup.length)return;const a=currentLineup[idx],b=currentLineup[j];const tmp=a.position_order;const {error:e1}=await sb.from('event_lineups').update({position_order:-999}).eq('id',a.id);if(e1)return toast(e1.message);const {error:e2}=await sb.from('event_lineups').update({position_order:tmp}).eq('id',b.id);if(e2)return toast(e2.message);const {error:e3}=await sb.from('event_lineups').update({position_order:b.position_order}).eq('id',a.id);if(e3)return toast(e3.message);await refreshLineup()}
     async function normalizeLineup(){const eventId=$('#lineupEventSelect').value;await loadLineup(eventId);for(let i=0;i<currentLineup.length;i++){if(currentLineup[i].position_order!==i+1)await sb.from('event_lineups').update({position_order:i+1}).eq('id',currentLineup[i].id)}}
 
+
+    async function renderProfile(){const pct=await myAttendancePercent();$('#myProfileCard').innerHTML=`<div class="row">${avatar(me,true)}<div class="grow"><div class="name" style="font-size:20px">${esc(me.full_name||'Sin nombre')}</div><div class="sub">${esc(me.instrument||'Sin instrumento')} · ${esc(me.voice||'Sin voz')}</div><div class="sub">${groupLabel(me.group_status)} · ${roleLabel(me.role)}</div></div></div><div class="grid two" style="margin-top:16px"><div><div class="tiny">Asistencia real</div><div class="kpi">${pct==null?'—':pct+'%'}</div></div><div><div class="tiny">Temporada</div><div class="kpi">${esc(activeSeason?.name||'—')}</div></div></div>`;const owned=new Set(myBadges.map(x=>x.badge_id));const won=badges.filter(b=>owned.has(b.id));$('#badges').innerHTML=won.length?won.map(b=>`<div class="badge"><div class="icon">${esc(b.icon||'🏅')}</div><div class="name">${esc(b.name)}</div><div class="sub">${esc(b.description||'')}</div></div>`).join(''):'<div class="muted">Aún no has conseguido ninguna insignia.</div>'}
+    let pdfPendingFiles=[];
+    function optionsHtml(list,value){return list.map(x=>`<option value="${esc(x)}" ${x===value?'selected':''}>${esc(x)}</option>`).join('')}
+    function guessInstrument(name){const n=name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');if(n.includes('trompeta'))return'Trompeta';if(n.includes('corneta'))return'Corneta';if(n.includes('trombon'))return'Trombón';if(n.includes('bombardino'))return'Bombardino';if(n.includes('caja'))return'Caja';if(n.includes('tambor'))return'Tambor';if(n.includes('bombo'))return'Bombo';if(n.includes('bandera'))return'Bandera';if(n.includes('auxiliar'))return'Auxiliar';if(n.includes('hermana'))return'Hermana Mayor';if(n.includes('utillero'))return'Utillero';return INSTRUMENTS[0]}
+    function guessVoice(name){const n=name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');if(/(^|[^0-9])1([^0-9]|$)|1a|primera|primer/.test(n))return'1ª voz';if(/(^|[^0-9])2([^0-9]|$)|2a|segunda/.test(n))return'2ª voz';if(/(^|[^0-9])3([^0-9]|$)|3a|tercera/.test(n))return'3ª voz';return'Única / no aplica'}
+    function renderPdfQueue(){const q=$('#pdfQueue');if(!pdfPendingFiles.length){q.innerHTML='<div class="muted">Todavía no has añadido ningún PDF.</div>';return}q.innerHTML=pdfPendingFiles.map((f,i)=>`<div class="pdf-item" data-pdf-index="${i}"><div class="row between"><div class="pdf-name grow">${esc(f.name)}</div><button type="button" class="btn small ghost" data-remove-pdf="${i}">Quitar</button></div><div class="grid two"><div class="field" style="margin:0"><label>Instrumento</label><select data-pdf-instrument="${i}">${optionsHtml(INSTRUMENTS,guessInstrument(f.name))}</select></div><div class="field" style="margin:0"><label>Voz</label><select data-pdf-voice="${i}">${optionsHtml(VOICES,guessVoice(f.name))}</select></div></div></div>`).join('');$$('[data-remove-pdf]').forEach(b=>b.addEventListener('click',()=>{pdfPendingFiles.splice(Number(b.dataset.removePdf),1);renderPdfQueue()}))}
+    function setPdfFiles(files){const incoming=[...files].filter(f=>f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'));const map=new Map(pdfPendingFiles.map(f=>[f.name+'|'+f.size+'|'+f.lastModified,f]));incoming.forEach(f=>map.set(f.name+'|'+f.size+'|'+f.lastModified,f));pdfPendingFiles=[...map.values()];renderPdfQueue()}
+    function preparePdfModal(m){pdfPendingFiles=[];$('#pdfMarchId').value=m.id;$('#pdfModalTitle').textContent='Subir PDFs · '+m.title;$('#pdfForm').reset();$('#pdfMarchId').value=m.id;$('#pdfProgress').textContent='';renderPdfQueue();openModal('pdfModal')}
+
     async function renderAll(){document.body.classList.toggle('is-admin',isAdmin());document.body.classList.toggle('is-owner',isOwner());renderMembers();renderMarches();await renderEvents();await renderProfile();if(isAdmin()){renderInventory();populateLineupEvents();await refreshLineup()}}
 
     async function boot(){const {data:{session:s}}=await sb.auth.getSession();session=s;if(!session){$('#authView').classList.remove('hidden');$('#appView').classList.add('hidden');return}try{$('#authView').classList.add('hidden');$('#appView').classList.remove('hidden');await loadProfile();await loadSeasons();await Promise.all([loadMembers(),loadEvents(),loadMarches(),loadBadges(),loadCommitmentLevels(),loadInventory()]);await renderAll()}catch(err){console.error(err);toast('Error al cargar datos: '+(err.message||err))}}
@@ -322,7 +332,7 @@
 
     sb.auth.onAuthStateChange((_event,newSession)=>{if((newSession?.user?.id||null)!==(session?.user?.id||null)){session=newSession;setTimeout(boot,0)}});
     boot();
-    if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=103',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}
+    if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=104',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}
   })();
   </script>
 </body>
