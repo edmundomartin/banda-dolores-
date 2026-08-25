@@ -34,7 +34,18 @@
     body.summer .crest{background:#f6f1e7e8;border-color:#b6903e}.summer .card,.summer .person,.summer .marcha,.summer .pdf-item,.summer .file{background:#f6f1e7}.summer .tabs{background:#eee8dcf2}.summer .field input,.summer .field select,.summer .field textarea{background:#f8f3e9;color:#211b10;border-color:#d2c2a0}.summer .sheet{background:#f1eadc}.summer .btn.ghost{color:#211b10;border-color:#c7b58e}.summer .pill{background:#eee5d1;color:#70561e;border-color:#ccb681}.summer .note{background:#eee2c8;color:#594719;border-color:#cfb475}.summer .dropzone{background:#f3ecdf}.summer .auth-card{background:#f1eadcee;color:#211b10}.summer .auth-shell{background:linear-gradient(180deg,rgba(238,232,220,.18),rgba(238,232,220,.88)),url('portada.jpeg') center/cover no-repeat}.summer .auth-card .lead{color:#6f6248}.summer .march-row,.summer .inventory-item,.summer .lineup-row,.summer .access-check{background:#f6f1e7}
 
     @media(max-width:640px){.grid.two,.grid.three{grid-template-columns:1fr}.hero{min-height:280px}.content{padding:13px}.badge-grid{grid-template-columns:1fr}.hero h1{font-size:33px}.sheet{padding:16px}.section-title{align-items:flex-start}.person{align-items:flex-start}.summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  </style>
+  
+    /* v1.0.6 — ajuste visual para la barra de estado de iPhone */
+    @supports (padding-top: env(safe-area-inset-top)) {
+      .app {
+        padding-top: max(22px, env(safe-area-inset-top));
+      }
+      .bottom-nav {
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+      }
+    }
+
+</style>
 </head>
 <body>
   <section id="authView" class="auth-shell">
@@ -126,7 +137,7 @@
       <div class="section-title"><h2>Insignias</h2><span class="pill">Beta</span></div><div id="badges" class="badge-grid"></div>
       <div class="admin-only"><div class="section-title"><h2>Dirección</h2></div><div class="card"><h3>Permisos</h3><p class="muted">Los administradores pueden gestionar eventos, asistencia, grupos, temporadas y marchas. Solo el Administrador Principal puede nombrar o retirar administradores.</p><div class="actions"><button class="btn small" id="seasonsBtn">Gestionar temporadas</button></div></div></div>
       <div class="danger-zone card"><h3>Cuenta</h3><button id="logoutBtn" class="btn ghost">Cerrar sesión</button></div>
-      <div class="version">v1.0.5 · GitHub Pages + Supabase</div>
+      <div class="version">v1.0.6 · GitHub Pages + Supabase</div>
     </div></section>
 
     <nav class="tabs" aria-label="Navegación principal"><button class="tab active" data-target="inicio"><span>⌂</span><span>Inicio</span></button><button class="tab" data-target="musicos"><span>♬</span><span>Músicos</span></button><button class="tab" data-target="eventos"><span>◫</span><span>Eventos</span></button><button class="tab" data-target="marchas"><span>♫</span><span>Marchas</span></button><button class="tab admin-tab" data-target="direccion"><span>⚙</span><span>Dirección</span></button><button class="tab" data-target="perfil"><span>●</span><span>Perfil</span></button></nav>
@@ -201,7 +212,7 @@
     const SUPABASE_KEY='sb_publishable_4F03BfJ58jAgnxJL5FDd3w_uWSOBaSf';
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     const INSTRUMENTS=['Trompeta','Corneta','Trombón','Bombardino','Tambor','Caja','Bombo','Platillos','Bandera','Auxiliar','Hermana Mayor','Utillero','Otro'];
-    const BUILD_ID='2026-08-25-v1.0.5';
+    const BUILD_ID='2026-08-25-v1.0.6';
     const VOICES=['1ª voz','2ª voz','3ª voz','Única / no aplica'];
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
     let session=null,me=null,members=[],events=[],myResponses={},allResponses=[],marches=[],marchFiles={},marchAccess={},badges=[],myBadges=[],seasons=[],activeSeason=null,commitmentLevels={},inventoryItems=[],currentLineup=[];
@@ -332,7 +343,7 @@
 
     sb.auth.onAuthStateChange((_event,newSession)=>{if((newSession?.user?.id||null)!==(session?.user?.id||null)){session=newSession;setTimeout(boot,0)}});
     boot();
-    if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=105',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}
+    if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=106',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});let refreshing=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(refreshing)return;refreshing=true;location.reload()})}
   })();
   </script>
 </body>
