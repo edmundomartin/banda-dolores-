@@ -193,6 +193,53 @@
     .event-cover-note{font-size:12px;color:var(--muted);margin-top:6px}
     .event-cover-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 
+
+    /* v1.3.4 — actuaciones destacadas */
+    .event.event-actuacion{
+      border:2px solid #d8b44f;
+      box-shadow:0 0 0 1px rgba(216,180,79,.18),0 10px 28px rgba(0,0,0,.22);
+    }
+    .event.event-actuacion::after{
+      content:"ACTUACIÓN";
+      position:absolute;
+      top:10px;
+      right:12px;
+      z-index:3;
+      padding:4px 9px;
+      border-radius:999px;
+      background:#d8b44f;
+      color:#111;
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.08em;
+      box-shadow:0 2px 10px rgba(0,0,0,.25);
+    }
+    .event.event-actuacion.has-cover::before{
+      background:linear-gradient(90deg,rgba(5,5,5,.88),rgba(5,5,5,.64) 58%,rgba(5,5,5,.42));
+    }
+    .event.event-actuacion .name{
+      color:#f3d77f;
+    }
+    .summer .event.event-actuacion{
+      border-color:#b58a19;
+      box-shadow:0 0 0 1px rgba(181,138,25,.14),0 8px 22px rgba(0,0,0,.10);
+    }
+    .summer .event.event-actuacion::after{
+      background:#b58a19;
+      color:#fff;
+    }
+    @media(max-width:560px){
+      .event.event-actuacion::after{
+        top:8px;
+        right:8px;
+        font-size:9px;
+        padding:4px 7px;
+      }
+      .event.event-actuacion .row.between{
+        padding-right:70px;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -335,7 +382,7 @@
       <div class="section-title"><h2>Insignias</h2><span class="pill">Beta</span></div><div id="badges" class="badge-grid"></div>
       <div class="admin-only"><div class="section-title"><h2>Dirección</h2></div><div class="card"><h3>Permisos</h3><p class="muted">Los administradores pueden gestionar eventos, asistencia, grupos, temporadas y marchas. Solo el Administrador Principal puede nombrar o retirar administradores.</p><div class="actions"><button class="btn small" id="seasonsBtn">Gestionar temporadas</button></div></div></div>
       <div class="danger-zone card"><h3>Cuenta</h3><button id="logoutBtn" class="btn ghost">Cerrar sesión</button></div>
-      <div class="version">v1.3.3 · Portadas de eventos · PWA estable</div>
+      <div class="version">v1.3.4 · Actuaciones destacadas · PWA estable</div>
     </div></section>
 
     <nav class="tabs" aria-label="Navegación principal"><button class="tab active" data-target="inicio"><span>⌂</span><span>Inicio</span></button><button class="tab" data-target="musicos"><span>♬</span><span>Músicos</span></button><button class="tab" data-target="eventos"><span>◫</span><span>Eventos</span></button><button class="tab" data-target="marchas"><span>♫</span><span>Marchas</span></button><button class="tab admin-tab" data-target="direccion"><span>⚙</span><span>Dirección</span></button><button class="tab" data-target="perfil"><span>●</span><span>Perfil</span></button></nav>
@@ -487,7 +534,7 @@
     const SUPABASE_KEY='sb_publishable_4F03BfJ58jAgnxJL5FDd3w_uWSOBaSf';
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     const INSTRUMENTS=['Trompeta','Corneta','Trombón','Bombardino','Tambor','Caja','Bombo','Platillos','Bandera','Auxiliar','Hermana Mayor','Utillero','Otro'];
-    const BUILD_ID='2026-08-26-v1.3.3-portadas-eventos';
+    const BUILD_ID='2026-08-26-v1.3.4-actuaciones-destacadas';
     const VOICES=['1ª voz','2ª voz','3ª voz','Única / no aplica'];
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
     let session=null,me=null,members=[],events=[],myResponses={},allResponses=[],marches=[],marchFiles={},marchAccess={},badges=[],myBadges=[],allUserBadges=[],seasons=[],activeSeason=null,commitmentLevels={},inventoryItems=[],lineupBoards=[],currentLineupBoard=null,currentLineup=[];
@@ -529,7 +576,7 @@
     async function deleteInventory(id){if(!isAdmin()||!confirm('¿Eliminar este elemento del inventario?'))return;const {error}=await sb.from('inventory_items').delete().eq('id',id);if(error)return toast(error.message);await loadInventory();renderInventory();toast('Elemento eliminado')}
     async function deleteMarch(marchId){if(!isAdmin()||!confirm('¿Eliminar esta marcha completa y todos sus PDF? Esta acción no se puede deshacer.'))return;const paths=(marchFiles[marchId]||[]).map(x=>x.storage_path);if(paths.length){const {error:s}=await sb.storage.from('march-pdfs').remove(paths);if(s)return toast(s.message)}const {error}=await sb.from('marches').delete().eq('id',marchId);if(error)return toast(error.message);closeModal('marchDetailModal');await loadMarches();renderMarches();toast('Marcha eliminada')}
     async function deleteMarchFile(marchId,fileId){if(!isAdmin()||!confirm('¿Seguro que quieres eliminar esta partitura?'))return;const f=(marchFiles[marchId]||[]).find(x=>x.id===fileId);if(!f)return;const {error:s}=await sb.storage.from('march-pdfs').remove([f.storage_path]);if(s)return toast(s.message);const {error:d}=await sb.from('march_files').delete().eq('id',fileId);if(d)return toast(d.message);await loadMarches();openMarchDetail(marchId);toast('Partitura eliminada')}
-    function eventCard(e,home=false){const r=myResponses[e.id];const selected=x=>r===x?' selected':'';const req=e.required_percentage!=null?`<span class="pill">mín. ${e.required_percentage}%</span>`:'';const cover=e.cover_path?eventCoverUrl(e.cover_path):null;const adminActions=isAdmin()&&!home?`<div class="actions"><button class="btn small ghost" data-responses="${e.id}">Ver respuestas</button><button class="btn small ghost" data-attendance="${e.id}">Pasar lista</button><button class="btn small ghost" data-event-report="${e.id}">Informe</button><button class="btn small ghost" data-cover-event="${e.id}">Portada</button><button class="btn small danger" data-delete-event="${e.id}">Borrar</button></div>`:'';return `<div class="card event${cover?' has-cover':''}${home?' home-event-click':''}" ${cover?`style="background-image:url('${esc(cover)}')"`:''} ${home?`data-home-event="${e.id}" role="button" tabindex="0"`:`data-full-event="${e.id}"`}><div class="row between"><div class="grow"><div class="name">${esc(e.title)}</div><div class="sub">${fmtDateTime(e.event_date)} · ${eventTypeLabel(e.event_type)} · ${e.target_group==='ambos'?'Todos':groupLabel(e.target_group)}</div></div>${req}</div>${e.description?`<div class="sub" style="margin-top:8px">${esc(e.description)}</div>`:''}<div style="margin-top:10px"><span class="status ${r==='voy'?'ok':r==='no_voy'?'bad':r==='duda'?'warn':'info'}">${responseLabel(r)}</span></div>${home?'':`<div class="actions"><button class="btn choice${selected('voy')}" data-vote="voy" data-id="${e.id}">Voy</button><button class="btn ghost choice${selected('no_voy')}" data-vote="no_voy" data-id="${e.id}">No voy</button><button class="btn ghost choice${selected('duda')}" data-vote="duda" data-id="${e.id}">En duda</button></div>${adminActions}`}</div>`}
+    function eventCard(e,home=false){const r=myResponses[e.id];const selected=x=>r===x?' selected':'';const req=e.required_percentage!=null?`<span class="pill">mín. ${e.required_percentage}%</span>`:'';const cover=e.cover_path?eventCoverUrl(e.cover_path):null;const adminActions=isAdmin()&&!home?`<div class="actions"><button class="btn small ghost" data-responses="${e.id}">Ver respuestas</button><button class="btn small ghost" data-attendance="${e.id}">Pasar lista</button><button class="btn small ghost" data-event-report="${e.id}">Informe</button><button class="btn small ghost" data-cover-event="${e.id}">Portada</button><button class="btn small danger" data-delete-event="${e.id}">Borrar</button></div>`:'';return `<div class="card event${e.event_type==='actuacion'?' event-actuacion':''}${cover?' has-cover':''}${home?' home-event-click':''}" ${cover?`style="background-image:url('${esc(cover)}')"`:''} ${home?`data-home-event="${e.id}" role="button" tabindex="0"`:`data-full-event="${e.id}"`}><div class="row between"><div class="grow"><div class="name">${esc(e.title)}</div><div class="sub">${fmtDateTime(e.event_date)} · ${eventTypeLabel(e.event_type)} · ${e.target_group==='ambos'?'Todos':groupLabel(e.target_group)}</div></div>${req}</div>${e.description?`<div class="sub" style="margin-top:8px">${esc(e.description)}</div>`:''}<div style="margin-top:10px"><span class="status ${r==='voy'?'ok':r==='no_voy'?'bad':r==='duda'?'warn':'info'}">${responseLabel(r)}</span></div>${home?'':`<div class="actions"><button class="btn choice${selected('voy')}" data-vote="voy" data-id="${e.id}">Voy</button><button class="btn ghost choice${selected('no_voy')}" data-vote="no_voy" data-id="${e.id}">No voy</button><button class="btn ghost choice${selected('duda')}" data-vote="duda" data-id="${e.id}">En duda</button></div>${adminActions}`}</div>`}
     function memberCard(m){const manage=isAdmin()?`<button class="btn small ghost" data-manage-member="${m.id}">Gestionar</button>`:'';const badge=m.role==='owner'?'<span class="pill owner">Principal</span>':m.role==='admin'?'<span class="pill admin">Admin</span>':'';const teacher=m.is_teacher?'<span class="teacher-badge">Profesor</span>':'';const resp=m.responsibility?`<span class="responsibility-badge">${esc(m.responsibility)}</span>`:'';const level=commitmentLevels[m.id]||'Sin datos';return `<div class="person" data-view-member="${m.id}" role="button" tabindex="0">${avatar(m)}<div class="grow"><div class="name">${esc(m.full_name||'Sin nombre')}</div><div class="sub">${esc(m.instrument||'Sin instrumento')} · ${esc(m.voice||'Sin voz')}</div><div class="commitment ${commitmentClass(level)}">Compromiso: ${esc(level)}</div></div><div class="row wrap">${resp}${teacher}${badge}${manage}</div></div>`}
     async function myAttendancePercent(){const countable=events.filter(e=>e.event_type==='ensayo'&&e.counts_for_percentage&&(e.target_group==='ambos'||e.target_group===me.group_status||(e.target_group==='escuela'&&me.is_teacher===true))&&new Date(e.event_date)<=new Date());if(!countable.length)return null;const ids=countable.map(e=>e.id);const {data,error}=await sb.from('attendance_records').select('event_id,present').eq('user_id',me.id).in('event_id',ids);if(error)throw error;const rows=data||[];if(!rows.length)return null;const present=rows.filter(x=>x.present===true).length;return Math.round(present/rows.length*100)}
     function openAdminMemberEditor(id){if(!isAdmin())return;const m=members.find(x=>x.id===id);if(!m)return;$('#memberAdminId').value=m.id;$('#memberAdminName').value=m.full_name||'';$('#memberAdminInstrument').innerHTML=INSTRUMENTS.map(x=>`<option>${esc(x)}</option>`).join('');$('#memberAdminInstrument').value=m.instrument||INSTRUMENTS[0];$('#memberAdminVoice').value=m.voice||'';openModal('memberAdminModal')}
