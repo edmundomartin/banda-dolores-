@@ -282,6 +282,57 @@
       }
     }
 
+
+    /* v1.4.1 — legibilidad de eventos con portada en Modo Verano */
+    body.summer .event.has-cover{
+      color:#fff;
+      background-size:cover;
+      background-position:center;
+    }
+    body.summer .event.has-cover::before{
+      background:linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.70) 58%,rgba(0,0,0,.48));
+    }
+    body.summer .event.has-cover .name{
+      color:#fff;
+      text-shadow:0 1px 4px rgba(0,0,0,.9);
+    }
+    body.summer .event.has-cover .sub{
+      color:#e9e4d8;
+      text-shadow:0 1px 3px rgba(0,0,0,.9);
+    }
+    body.summer .event.has-cover .btn.ghost,
+    body.summer .event.has-cover .choice:not(.selected){
+      color:#fff!important;
+      border-color:rgba(255,255,255,.58)!important;
+      background:rgba(0,0,0,.24)!important;
+      text-shadow:0 1px 2px rgba(0,0,0,.9);
+    }
+    body.summer .event.has-cover .choice.selected{
+      color:#fff!important;
+      border-color:#e4bf61!important;
+      outline:2px solid #e4bf61!important;
+      background:rgba(55,40,11,.88)!important;
+      box-shadow:0 0 0 1px rgba(255,224,139,.25),0 2px 10px rgba(0,0,0,.35);
+    }
+    body.summer .event.has-cover .pill{
+      color:#f3dfaa;
+      border-color:#b99a53;
+      background:rgba(24,18,8,.86);
+      text-shadow:none;
+    }
+    body.summer .event.has-cover .btn.danger{
+      color:#ffd5d5;
+      border-color:#a65b5b;
+      background:rgba(63,13,13,.75);
+    }
+    body.summer .event.has-cover .status.ok{color:#7ee59a}
+    body.summer .event.has-cover .status.bad{color:#ff8e8e}
+    body.summer .event.has-cover .status.warn{color:#ffd36f}
+    body.summer .event.has-cover .status.info{color:#d7d7d7}
+    body.summer .event.event-destacado.has-cover .name{
+      color:#f3d77f;
+    }
+
 </style>
 </head>
 <body>
@@ -424,7 +475,7 @@
       <div class="section-title"><h2>Insignias</h2><span class="pill">Beta</span></div><div id="badges" class="badge-grid"></div>
       <div class="admin-only"><div class="section-title"><h2>Dirección</h2></div><div class="card"><h3>Permisos</h3><p class="muted">Los administradores pueden gestionar eventos, asistencia, grupos, temporadas y marchas. Solo el Administrador Principal puede nombrar o retirar administradores.</p><div class="actions"><button class="btn small" id="seasonsBtn">Gestionar temporadas</button></div></div></div>
       <div class="danger-zone card"><h3>Cuenta</h3><button id="logoutBtn" class="btn ghost">Cerrar sesión</button></div>
-      <div class="version">v1.4.0 · Voto reversible · PWA estable</div>
+      <div class="version">v1.4.1 · Modo Verano · PWA estable</div>
     </div></section>
 
     <nav class="tabs" aria-label="Navegación principal"><button class="tab active" data-target="inicio"><span>⌂</span><span>Inicio</span></button><button class="tab" data-target="musicos"><span>♬</span><span>Músicos</span></button><button class="tab" data-target="eventos"><span>◫</span><span>Eventos</span></button><button class="tab" data-target="marchas"><span>♫</span><span>Marchas</span></button><button class="tab admin-tab" data-target="direccion"><span>⚙</span><span>Dirección</span></button><button class="tab" data-target="perfil"><span>●</span><span>Perfil</span></button></nav>
@@ -581,7 +632,7 @@
     const SUPABASE_KEY='sb_publishable_4F03BfJ58jAgnxJL5FDd3w_uWSOBaSf';
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     const INSTRUMENTS=['Trompeta','Corneta','Trombón','Bombardino','Tambor','Caja','Bombo','Platillos','Bandera','Auxiliar','Hermana Mayor','Utillero','Otro'];
-    const BUILD_ID='2026-08-26-v1.4.0-voto-reversible';
+    const BUILD_ID='2026-08-26-v1.4.1-verano-eventos';
     const VOICES=['1ª voz','2ª voz','3ª voz','Única / no aplica'];
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
     let session=null,me=null,members=[],events=[],myResponses={},allResponses=[],marches=[],marchFiles={},marchAccess={},badges=[],myBadges=[],allUserBadges=[],seasons=[],activeSeason=null,commitmentLevels={},inventoryItems=[],lineupBoards=[],currentLineupBoard=null,currentLineup=[];
