@@ -411,7 +411,7 @@
       <div class="section-title"><h2>Insignias</h2><span class="pill">Beta</span></div><div id="badges" class="badge-grid"></div>
       <div class="admin-only"><div class="section-title"><h2>Dirección</h2></div><div class="card"><h3>Permisos</h3><p class="muted">Los administradores pueden gestionar eventos, asistencia, grupos, temporadas y marchas. Solo el Administrador Principal puede nombrar o retirar administradores.</p><div class="actions"><button class="btn small" id="seasonsBtn">Gestionar temporadas</button></div></div></div>
       <div class="danger-zone card"><h3>Cuenta</h3><button id="logoutBtn" class="btn ghost">Cerrar sesión</button></div>
-      <div class="version">v1.3.5 · Eventos seguros · PWA estable</div>
+      <div class="version">v1.3.6 · Portadas en grupo · PWA estable</div>
     </div></section>
 
     <nav class="tabs" aria-label="Navegación principal"><button class="tab active" data-target="inicio"><span>⌂</span><span>Inicio</span></button><button class="tab" data-target="musicos"><span>♬</span><span>Músicos</span></button><button class="tab" data-target="eventos"><span>◫</span><span>Eventos</span></button><button class="tab" data-target="marchas"><span>♫</span><span>Marchas</span></button><button class="tab admin-tab" data-target="direccion"><span>⚙</span><span>Dirección</span></button><button class="tab" data-target="perfil"><span>●</span><span>Perfil</span></button></nav>
@@ -549,9 +549,14 @@
     <input type="hidden" id="eventCoverEventId">
     <div id="eventCoverEditPreview" class="event-cover-preview">Sin imagen</div>
     <div class="field" style="margin-top:12px"><label>Nueva imagen</label><input id="eventCoverEditFile" type="file" accept="image/*"></div>
+    <div class="field"><label>Aplicar esta portada a</label><select id="eventCoverScope">
+      <option value="single">Solo este evento</option>
+      <option value="same_title">Todos los eventos con el mismo nombre</option>
+    </select></div>
+    <div id="eventCoverScopeHint" class="note">Podrás cambiar después cualquier evento individualmente sin modificar los demás.</div>
     <div class="event-cover-actions">
       <button class="btn primary" id="saveEventCoverBtn" type="button">Guardar portada</button>
-      <button class="btn danger" id="removeEventCoverBtn" type="button">Quitar portada</button>
+      <button class="btn danger" id="removeEventCoverBtn" type="button" title="Quita la portada solo de este evento">Quitar portada de este evento</button>
     </div>
   </div></div>
 
@@ -563,7 +568,7 @@
     const SUPABASE_KEY='sb_publishable_4F03BfJ58jAgnxJL5FDd3w_uWSOBaSf';
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     const INSTRUMENTS=['Trompeta','Corneta','Trombón','Bombardino','Tambor','Caja','Bombo','Platillos','Bandera','Auxiliar','Hermana Mayor','Utillero','Otro'];
-    const BUILD_ID='2026-08-26-v1.3.5-eventos-seguros';
+    const BUILD_ID='2026-08-26-v1.3.6-portadas-en-grupo';
     const VOICES=['1ª voz','2ª voz','3ª voz','Única / no aplica'];
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
     let session=null,me=null,members=[],events=[],myResponses={},allResponses=[],marches=[],marchFiles={},marchAccess={},badges=[],myBadges=[],allUserBadges=[],seasons=[],activeSeason=null,commitmentLevels={},inventoryItems=[],lineupBoards=[],currentLineupBoard=null,currentLineup=[];
@@ -696,8 +701,8 @@
     async function normalizeEventCoverFile(file){if(!file)return null;if(!file.type.startsWith('image/')&&!/\.(heic|heif|jpg|jpeg|png|webp)$/i.test(file.name))throw new Error('Selecciona una imagen válida');const url=URL.createObjectURL(file);try{const img=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('No se pudo leer la imagen. Prueba con JPG o PNG.'));im.src=url});const max=1800,scale=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale));const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);const blob=await new Promise(res=>canvas.toBlob(res,'image/jpeg',.84));if(!blob)throw new Error('No se pudo preparar la imagen');if(blob.size>5*1024*1024)throw new Error('La imagen sigue siendo demasiado grande');return new File([blob],'cover.jpg',{type:'image/jpeg'})}finally{URL.revokeObjectURL(url)}}
     async function uploadEventCover(file){if(!file)return null;const prepared=await normalizeEventCoverFile(file);const path=`covers/${me.id}-${Date.now()}-${crypto.randomUUID()}.jpg`;const {error}=await sb.storage.from('event-covers').upload(path,prepared,{upsert:false,contentType:'image/jpeg',cacheControl:'3600'});if(error)throw error;return path}
     function setCoverPreview(el,fileOrUrl){if(!el)return;if(!fileOrUrl){el.classList.remove('has-image');el.style.backgroundImage='';el.textContent='Sin imagen';return}let url=fileOrUrl;if(fileOrUrl instanceof File)url=URL.createObjectURL(fileOrUrl);el.classList.add('has-image');el.style.backgroundImage=`url("${url}")`;el.textContent='';if(fileOrUrl instanceof File)setTimeout(()=>URL.revokeObjectURL(url),5000)}
-    function openEventCoverEditor(eventId){if(!isAdmin())return;const e=events.find(x=>x.id===eventId);if(!e)return;$('#eventCoverEventId').value=e.id;$('#eventCoverModalTitle').textContent='Portada · '+e.title;$('#eventCoverEditFile').value='';setCoverPreview($('#eventCoverEditPreview'),e.cover_path?eventCoverUrl(e.cover_path):null);openModal('eventCoverModal')}
-    async function saveEventCover(){if(!isAdmin())return;const id=$('#eventCoverEventId').value,e=events.find(x=>x.id===id);if(!e)return;const file=$('#eventCoverEditFile').files[0];if(!file)return toast('Selecciona una imagen');try{const newPath=await uploadEventCover(file);const {error}=await sb.from('events').update({cover_path:newPath}).eq('id',id);if(error)throw error;if(e.cover_path)await sb.storage.from('event-covers').remove([e.cover_path]).catch(()=>{});closeModal('eventCoverModal');await loadEvents();await renderEvents();toast('Portada actualizada')}catch(err){toast(err.message||String(err))}}
+    function openEventCoverEditor(eventId){if(!isAdmin())return;const e=events.find(x=>x.id===eventId);if(!e)return;$('#eventCoverEventId').value=e.id;$('#eventCoverModalTitle').textContent='Portada · '+e.title;$('#eventCoverEditFile').value='';$('#eventCoverScope').value='single';setCoverPreview($('#eventCoverEditPreview'),e.cover_path?eventCoverUrl(e.cover_path):null);openModal('eventCoverModal')}
+    async function saveEventCover(){if(!isAdmin())return;const id=$('#eventCoverEventId').value,e=events.find(x=>x.id===id);if(!e)return;const file=$('#eventCoverEditFile').files[0];if(!file)return toast('Selecciona una imagen');const scope=$('#eventCoverScope').value;try{const newPath=await uploadEventCover(file);let query=sb.from('events').update({cover_path:newPath});if(scope==='same_title')query=query.eq('title',e.title);else query=query.eq('id',id);const {error}=await query;if(error)throw error;const oldPaths=[...new Set((scope==='same_title'?events.filter(x=>x.title===e.title):[e]).map(x=>x.cover_path).filter(Boolean).filter(x=>x!==newPath))];if(oldPaths.length)await sb.storage.from('event-covers').remove(oldPaths).catch(()=>{});closeModal('eventCoverModal');await loadEvents();await renderEvents();toast(scope==='same_title'?`Portada aplicada a todos los eventos “${e.title}”`:'Portada actualizada')}catch(err){toast(err.message||String(err))}}
     async function removeEventCover(){if(!isAdmin())return;const id=$('#eventCoverEventId').value,e=events.find(x=>x.id===id);if(!e||!e.cover_path)return closeModal('eventCoverModal');if(!confirm('¿Quitar la portada de este evento?'))return;const {error}=await sb.from('events').update({cover_path:null}).eq('id',id);if(error)return toast(error.message);await sb.storage.from('event-covers').remove([e.cover_path]).catch(()=>{});closeModal('eventCoverModal');await loadEvents();await renderEvents();toast('Portada eliminada')}
 
     function weekdayFromDateInput(value){if(!value)return null;const [y,m,d]=value.split('-').map(Number);return new Date(y,m-1,d).getDay()}
