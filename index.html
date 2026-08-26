@@ -123,6 +123,65 @@
       .admin-member-row .secondary-col{display:none}
     }
 
+
+    /* v1.3.1 — corrección móvil de tarjetas de músicos */
+    @media(max-width:560px){
+      #officialList .person,
+      #schoolList .person{
+        display:grid;
+        grid-template-columns:52px minmax(0,1fr);
+        gap:10px;
+        align-items:start;
+        padding:12px;
+      }
+      #officialList .person .avatar,
+      #schoolList .person .avatar{
+        width:52px;
+        height:52px;
+        min-width:52px;
+        grid-column:1;
+        grid-row:1 / span 2;
+      }
+      #officialList .person .grow,
+      #schoolList .person .grow{
+        min-width:0;
+        grid-column:2;
+        grid-row:1;
+      }
+      #officialList .person .name,
+      #schoolList .person .name{
+        font-size:17px;
+        line-height:1.15;
+        overflow-wrap:anywhere;
+      }
+      #officialList .person > .row.wrap,
+      #schoolList .person > .row.wrap{
+        grid-column:2;
+        grid-row:2;
+        width:100%;
+        display:flex;
+        flex-wrap:wrap;
+        gap:6px;
+        margin:0;
+        justify-content:flex-start;
+        align-items:flex-start;
+      }
+      #officialList .responsibility-badge,
+      #schoolList .responsibility-badge{
+        max-width:100%;
+        white-space:normal;
+        line-height:1.2;
+        text-align:left;
+        padding:5px 8px;
+        overflow-wrap:anywhere;
+      }
+      #officialList [data-manage-member],
+      #schoolList [data-manage-member]{
+        margin-left:0;
+        flex:0 0 auto;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -265,7 +324,7 @@
       <div class="section-title"><h2>Insignias</h2><span class="pill">Beta</span></div><div id="badges" class="badge-grid"></div>
       <div class="admin-only"><div class="section-title"><h2>Dirección</h2></div><div class="card"><h3>Permisos</h3><p class="muted">Los administradores pueden gestionar eventos, asistencia, grupos, temporadas y marchas. Solo el Administrador Principal puede nombrar o retirar administradores.</p><div class="actions"><button class="btn small" id="seasonsBtn">Gestionar temporadas</button></div></div></div>
       <div class="danger-zone card"><h3>Cuenta</h3><button id="logoutBtn" class="btn ghost">Cerrar sesión</button></div>
-      <div class="version">v1.3.0 · Dirección Pro · PWA estable</div>
+      <div class="version">v1.3.1 · Dirección Pro · PWA estable</div>
     </div></section>
 
     <nav class="tabs" aria-label="Navegación principal"><button class="tab active" data-target="inicio"><span>⌂</span><span>Inicio</span></button><button class="tab" data-target="musicos"><span>♬</span><span>Músicos</span></button><button class="tab" data-target="eventos"><span>◫</span><span>Eventos</span></button><button class="tab" data-target="marchas"><span>♫</span><span>Marchas</span></button><button class="tab admin-tab" data-target="direccion"><span>⚙</span><span>Dirección</span></button><button class="tab" data-target="perfil"><span>●</span><span>Perfil</span></button></nav>
@@ -393,7 +452,7 @@
     const SUPABASE_KEY='sb_publishable_4F03BfJ58jAgnxJL5FDd3w_uWSOBaSf';
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     const INSTRUMENTS=['Trompeta','Corneta','Trombón','Bombardino','Tambor','Caja','Bombo','Platillos','Bandera','Auxiliar','Hermana Mayor','Utillero','Otro'];
-    const BUILD_ID='2026-08-26-v1.3.0-direccion-pro';
+    const BUILD_ID='2026-08-26-v1.3.1-mobile-fix';
     const VOICES=['1ª voz','2ª voz','3ª voz','Única / no aplica'];
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
     let session=null,me=null,members=[],events=[],myResponses={},allResponses=[],marches=[],marchFiles={},marchAccess={},badges=[],myBadges=[],allUserBadges=[],seasons=[],activeSeason=null,commitmentLevels={},inventoryItems=[],lineupBoards=[],currentLineupBoard=null,currentLineup=[];
