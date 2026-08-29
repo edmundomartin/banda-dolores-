@@ -404,7 +404,7 @@
     .calendar-action:hover{filter:brightness(1.08)}
     .summer .calendar-action{background:#fff7df;color:#725610;border-color:#d0b15e}
 
-</style>
+.app-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.app-calendar-weekday{text-align:center;font-size:10px;font-weight:900;color:var(--muted);padding:5px 0}.app-calendar-day{min-height:48px;border:1px solid var(--border);border-radius:9px;padding:5px}.app-calendar-day.empty{opacity:.25}.app-calendar-num{font-size:11px;font-weight:900}.app-calendar-dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}.app-calendar-dot{width:7px;height:7px;border-radius:50%;background:#777}.app-calendar-dot.voy{background:#2f9d61}.app-calendar-dot.no_voy{background:#c84f4f}.app-calendar-dot.duda{background:#c99a32}.calendar-event-row{padding:10px 0;border-bottom:1px solid var(--border)}.app-calendar-dot.admin-good{background:#2f9d61;width:9px;height:9px}.app-calendar-dot.admin-low{background:#c84f4f;width:9px;height:9px}.admin-calendar-pct{display:inline-block;margin-top:5px;padding:3px 7px;border-radius:999px;font-size:10px;font-weight:900}.admin-calendar-pct.good{background:#173d29;color:#8ce0ad;border:1px solid #2f9d61}.admin-calendar-pct.low{background:#481f1f;color:#f1a2a2;border:1px solid #c84f4f}.summer .admin-calendar-pct.good{background:#e8f7ee;color:#17653a}.summer .admin-calendar-pct.low{background:#fdecec;color:#9c2f2f}</style>
 </head>
 <body>
   <section id="authView" class="auth-shell">
@@ -441,7 +441,7 @@
       <div class="content">
         <div class="row between wrap" style="margin-bottom:12px"><span class="pill" id="activeSeasonPill">Temporada —</span><span class="tiny" id="themeHint">Pulsa el emblema para cambiar de modo</span></div>
         <div class="grid two"><div class="card home-event-click next-event-card" id="nextEventCard" role="button" tabindex="0"><div class="tiny">Próximo evento</div><div class="kpi" id="nextEventDay">—</div><div class="muted" id="nextEventInfo">Sin eventos</div></div><div class="card"><div class="tiny">Tu asistencia real</div><div class="kpi" id="kpiAttendance">—</div><div class="muted" id="attendanceSeasonLabel">Temporada —</div></div></div>
-        <div class="section-title"><h2>Próximos eventos</h2><span class="pill" id="homeSeasonPill">—</span></div><div id="homeEvents" class="list"></div>
+        <div class="section-title"><h2>Mi calendario</h2></div><div class="card"><div class="row between"><div><div class="name">Calendario de la banda</div><div class="sub">Tus eventos y tu respuesta de asistencia.</div></div><button class="btn small ghost" id="openMyCalendar">Abrir</button></div></div><div class="section-title"><h2>Próximos eventos</h2><span class="pill" id="homeSeasonPill">—</span></div><div id="homeEvents" class="list"></div>
       </div>
     </section>
 
@@ -546,7 +546,7 @@
       <div class="section-title"><h2>Insignias</h2><span class="pill">Beta</span></div><div id="badges" class="badge-grid"></div>
       <div class="admin-only"><div class="section-title"><h2>Dirección</h2></div><div class="card"><h3>Permisos</h3><p class="muted">Los administradores pueden gestionar eventos, asistencia, grupos, temporadas y marchas. Solo el Administrador Principal puede nombrar o retirar administradores.</p><div class="actions"><button class="btn small" id="seasonsBtn">Gestionar temporadas</button></div></div></div>
       <div class="danger-zone card"><h3>Cuenta</h3><button id="logoutBtn" class="btn ghost">Cerrar sesión</button></div>
-      <div class="version">v1.5.2 · Insignias en perfil · PWA estable</div>
+      <div class="version">v1.5.4 · Calendario admin · PWA estable</div>
     </div></section>
 
     <nav class="tabs" aria-label="Navegación principal"><button class="tab active" data-target="inicio"><span>⌂</span><span>Inicio</span></button><button class="tab" data-target="musicos"><span>♬</span><span>Músicos</span></button><button class="tab" data-target="eventos"><span>◫</span><span>Eventos</span></button><button class="tab" data-target="marchas"><span>♫</span><span>Marchas</span></button><button class="tab admin-tab" data-target="direccion"><span>⚙</span><span>Dirección</span></button><button class="tab" data-target="perfil"><span>●</span><span>Perfil</span></button></nav>
@@ -696,7 +696,7 @@
   </div></div>
 
 
-  <div class="modal" id="homeEventDetailModal"><div class="sheet">
+  <div class="modal" id="myCalendarModal"><div class="sheet"><div class="row between"><h2>Mi calendario</h2><button class="btn ghost" data-close="myCalendarModal">Cerrar</button></div><div class="row between wrap" style="margin:12px 0"><button class="btn small ghost" id="calPrevMonth">‹</button><div class="name" id="calMonthTitle"></div><button class="btn small ghost" id="calNextMonth">›</button></div><div id="myCalendarGrid"></div><div class="section-title"><h2>Eventos del mes</h2></div><div id="myCalendarEvents"></div></div></div><div class="modal" id="homeEventDetailModal"><div class="sheet">
     <div class="row between"><h2 id="homeEventDetailTitle">Evento</h2><button class="btn ghost" data-close="homeEventDetailModal">Cerrar</button></div>
     <div id="homeEventDetailBody"></div>
   </div></div>
@@ -709,7 +709,7 @@
     const SUPABASE_KEY='sb_publishable_4F03BfJ58jAgnxJL5FDd3w_uWSOBaSf';
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     const INSTRUMENTS=['Trompeta','Corneta','Trombón','Bombardino','Tambor','Caja','Bombo','Platillos','Bandera','Auxiliar','Hermana Mayor','Utillero','Otro'];
-    const BUILD_ID='2026-08-28-v1.5.2-perfil-insignias';
+    const BUILD_ID='2026-08-28-v1.5.4-calendario-admin';
     const VOICES=['1ª voz','2ª voz','3ª voz','Única / no aplica'];
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
     let session=null,me=null,members=[],events=[],myResponses={},allResponses=[],marches=[],marchFiles={},marchAccess={},badges=[],myBadges=[],allUserBadges=[],featuredBadges={},seasons=[],activeSeason=null,commitmentLevels={},attendanceRanking={},adminAttendanceStats={},inventoryItems=[],lineupBoards=[],currentLineupBoard=null,currentLineup=[];
@@ -835,10 +835,17 @@
 
     async function renderAll(){document.body.classList.toggle('is-admin',isAdmin());document.body.classList.toggle('is-owner',isOwner());renderMembers();renderMarches();await renderEvents();await renderProfile();if(isAdmin()){await renderAdminDashboard();renderAdminMembers();renderInventory();populateSavedLineups();populateLineupEvents();renderLineup();renderBadgesAdmin();populateReportEvents()}}
 
+    let myCalendarCursor=new Date();
+    function calendarResponseClass(r){return r==='voy'?'voy':r==='no_voy'?'no_voy':r==='duda'?'duda':'none'}
+    function adminEventAttendance(e){if(!isAdmin())return null;const eligible=eligibleForEvent(e);if(!eligible.length)return null;const going=eligible.filter(m=>responseFor(e.id,m.id)==='voy').length;return Math.round(going*100/eligible.length)}
+
+    function renderMyCalendar(){const y=myCalendarCursor.getFullYear(),mo=myCalendarCursor.getMonth();const t=new Intl.DateTimeFormat('es-ES',{month:'long',year:'numeric'}).format(new Date(y,mo,1));$('#calMonthTitle').textContent=t.charAt(0).toUpperCase()+t.slice(1);const first=new Date(y,mo,1),days=new Date(y,mo+1,0).getDate(),offset=(first.getDay()+6)%7;const es=events.filter(e=>{const d=new Date(e.event_date);return d.getFullYear()===y&&d.getMonth()===mo}).sort((a,b)=>new Date(a.event_date)-new Date(b.event_date));let cells=['L','M','X','J','V','S','D'].map(x=>`<div class="app-calendar-weekday">${x}</div>`).join('');for(let i=0;i<offset;i++)cells+='<div class="app-calendar-day empty"></div>';for(let day=1;day<=days;day++){const de=es.filter(e=>new Date(e.event_date).getDate()===day);cells+=`<div class="app-calendar-day"><div class="app-calendar-num">${day}</div><div class="app-calendar-dots">${de.map(e=>{const pct=adminEventAttendance(e);return `<span class="app-calendar-dot ${isAdmin()&&pct!=null?(pct>=60?'admin-good':'admin-low'):calendarResponseClass(myResponses[e.id])}" title="${isAdmin()&&pct!=null?'Asistencia prevista: '+pct+'%':responseLabel(myResponses[e.id])}"></span>`}).join('')}</div></div>`}$('#myCalendarGrid').innerHTML=`<div class="app-calendar-grid">${cells}</div>`;$('#myCalendarEvents').innerHTML=es.length?es.map(e=>{const r=myResponses[e.id];return `<div class="calendar-event-row"><div class="row between"><div class="grow"><div class="name">${esc(e.title)}</div><div class="sub">${fmtDateTime(e.event_date)} · ${eventTypeLabel(e.event_type)}</div>${isAdmin()?(()=>{const pct=adminEventAttendance(e);return pct==null?'':`<div class="admin-calendar-pct ${pct>=60?'good':'low'}">Asistencia prevista: ${pct}%</div>`})():''}</div><span class="status ${r==='voy'?'ok':r==='no_voy'?'bad':r==='duda'?'warn':'info'}">${responseLabel(r)}</span></div>${r==='voy'?`<button class="calendar-action" data-app-calendar-mobile="${e.id}">📅 Añadir al calendario del móvil</button>`:''}</div>`}).join(''):'<div class="muted">No hay eventos este mes.</div>';$$('[data-app-calendar-mobile]').forEach(b=>b.addEventListener('click',()=>downloadCalendarEvent(b.dataset.appCalendarMobile)))}
+    function openMyCalendar(){myCalendarCursor=new Date();renderMyCalendar();openModal('myCalendarModal')}
     async function boot(){const {data:{session:s}}=await sb.auth.getSession();session=s;if(!session){$('#authView').classList.remove('hidden');$('#appView').classList.add('hidden');return}try{$('#authView').classList.add('hidden');$('#appView').classList.remove('hidden');await loadProfile();await loadSeasons();await Promise.all([loadMembers(),loadEvents(),loadMarches(),loadBadges(),loadCommitmentLevels(),loadInventory(),loadLineupBoards()]);await loadFeaturedBadges();await loadAttendanceRanking();await renderAll()}catch(err){console.error(err);toast('Error al cargar datos: '+(err.message||err))}}
 
     $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter;btn.disabled=true;const {error}=await sb.auth.signInWithPassword({email:$('#loginEmail').value.trim(),password:$('#loginPassword').value});btn.disabled=false;if(error)return toast(error.message);toast('Sesión iniciada');await boot()});
     $('#registerForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter;btn.disabled=true;const {data,error}=await sb.auth.signUp({email:$('#registerEmail').value.trim(),password:$('#registerPassword').value,options:{data:{full_name:$('#registerName').value.trim(),instrument:$('#registerInstrument').value,voice:$('#registerVoice').value,group_status:$('#registerGroup').value}}});btn.disabled=false;if(error)return toast(humanAuthError(error.message));if(data.session){toast('Usuario creado. Ya puedes entrar.');await boot()}else{toast('Cuenta creada, pero Supabase sigue exigiendo confirmar el correo. Desactiva "Confirm email" en Supabase para permitir acceso inmediato.');setAuthMode(false)}});
+    $('#openMyCalendar').addEventListener('click',openMyCalendar);$('#calPrevMonth').addEventListener('click',()=>{myCalendarCursor=new Date(myCalendarCursor.getFullYear(),myCalendarCursor.getMonth()-1,1);renderMyCalendar()});$('#calNextMonth').addEventListener('click',()=>{myCalendarCursor=new Date(myCalendarCursor.getFullYear(),myCalendarCursor.getMonth()+1,1);renderMyCalendar()});
     $('#logoutBtn').addEventListener('click',async()=>{await sb.auth.signOut();location.reload()});
 
     $('#openProfileBtn').addEventListener('click',openProfile);$('#editProfileBtn').addEventListener('click',openProfile);
