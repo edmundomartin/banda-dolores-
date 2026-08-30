@@ -445,6 +445,28 @@
     .invitee-option{display:flex;align-items:center;gap:10px;padding:9px;border:1px solid #2b2b2b;border-radius:11px;background:#111}
     .invitee-option input{width:auto!important;margin:0}
     .invitee-option .grow{min-width:0}
+
+    /* v1.5.13: los modales deben quedar siempre por encima de la navegación inferior */
+    .modal{z-index:300!important}
+    .modal .sheet,.modal .modal-card,.modal-content{
+      max-height:calc(100dvh - 24px)!important;
+      overflow-y:auto!important;
+      overscroll-behavior:contain;
+      padding-bottom:calc(110px + env(safe-area-inset-bottom))!important;
+    }
+    #memberModal{z-index:350!important}
+    #memberModal .sheet,#memberModal .modal-card{
+      max-height:calc(100dvh - 16px)!important;
+      overflow-y:auto!important;
+      padding-bottom:calc(125px + env(safe-area-inset-bottom))!important;
+    }
+    @media (min-width:641px){
+      #memberModal .sheet,#memberModal .modal-card{
+        max-height:calc(100dvh - 40px)!important;
+        padding-bottom:115px!important;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -592,7 +614,7 @@
       <div class="section-title"><h2>Insignias</h2><span class="pill">Beta</span></div><div id="badges" class="badge-grid"></div>
       <div class="admin-only"><div class="section-title"><h2>Dirección</h2></div><div class="card"><h3>Permisos</h3><p class="muted">Los administradores pueden gestionar eventos, asistencia, grupos, temporadas y marchas. Solo el Administrador Principal puede nombrar o retirar administradores.</p><div class="actions"><button class="btn small" id="seasonsBtn">Gestionar temporadas</button></div></div></div>
       <div class="danger-zone card"><h3>Cuenta</h3><button id="logoutBtn" class="btn ghost">Cerrar sesión</button></div>
-      <div class="version">v1.5.12 · Votos corregidos · PWA estable</div>
+      <div class="version">v1.5.13 · Gestión de miembros visible · PWA estable</div>
     </div></section>
 
     <nav class="tabs" aria-label="Navegación principal"><button class="tab active" data-target="inicio"><span>⌂</span><span>Inicio</span></button><button class="tab" data-target="musicos"><span>♬</span><span>Músicos</span></button><button class="tab" data-target="eventos"><span>◫</span><span>Eventos</span></button><button class="tab" data-target="marchas"><span>♫</span><span>Marchas</span></button><button class="tab admin-tab" data-target="direccion"><span>⚙</span><span>Dirección</span></button><button class="tab" data-target="perfil"><span>●</span><span>Perfil</span></button></nav>
@@ -756,7 +778,7 @@
     const SUPABASE_KEY='sb_publishable_4F03BfJ58jAgnxJL5FDd3w_uWSOBaSf';
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     const INSTRUMENTS=['Trompeta','Corneta','Trombón','Bombardino','Tambor','Caja','Bombo','Platillos','Bandera','Auxiliar','Hermana Mayor','Utillero','Otro'];
-    const BUILD_ID='2026-08-30-v1.5.12-fix-votos';
+    const BUILD_ID='2026-08-30-v1.5.13-modal-miembros-fix';
     const VOICES=['1ª voz','2ª voz','3ª voz','Única / no aplica'];
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
     let session=null,me=null,members=[],events=[],myResponses={},allResponses=[],eventInvitees={},eventExclusions={},marches=[],marchFiles={},marchAccess={},badges=[],myBadges=[],allUserBadges=[],featuredBadges={},seasons=[],activeSeason=null,commitmentLevels={},attendanceRanking={},adminAttendanceStats={},inventoryItems=[],lineupBoards=[],currentLineupBoard=null,currentLineup=[];
